@@ -246,9 +246,22 @@ async function loadDb() {
     const res = await fetch(DB_URL + '.json');
     const rec = await res.json();
     if (rec && rec.teams) {
-      db = rec.teams;
-      TEAMS.forEach(t => { if (!db[t]) db[t] = {}; YEARS.forEach(y => { if (!db[t][y]) db[t][y] = []; }); });
-    } else { db = emptyDb(); await saveDb(); }
+      db = {};
+      TEAMS.forEach(t => {
+        db[t] = {};
+        YEARS.forEach(y => {
+          db[t][y] = (rec.teams[t]?.[y] || []).map(item => ({
+            ...item,
+            marker: null,
+            _marker: null,
+            _latlng: null
+          }));
+        });
+      });
+    } else {
+      db = emptyDb();
+      await saveDb();
+    }
   } catch(e) { db = emptyDb(); }
   renderTree();
   setSaveBadge('ok', '동기화됨');
