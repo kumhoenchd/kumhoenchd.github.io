@@ -258,11 +258,9 @@ async function loadDb() {
           }));
         });
       });
-    } else {
-      db = emptyDb();
-      await saveDb();
-    }
-  } catch(e) { db = emptyDb(); }
+} else { db = emptyDb(); }
+  } 
+  catch(e) { db = emptyDb(); }
   renderTree();
   setSaveBadge('ok', '동기화됨');
 }
