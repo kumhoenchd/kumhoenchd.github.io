@@ -257,21 +257,28 @@ async function loadDb() {
 async function saveDb() {
   setSaveBadge('saving', '저장 중...');
   try {
+    const clean = {};
+    TEAMS.forEach(t => {
+      clean[t] = {};
+      YEARS.forEach(y => {
+        clean[t][y] = (db[t]?.[y]||[]).map(item => ({
+          id: item.id,
+          name: item.name,
+          addr: item.addr,
+          memo: item.memo || '',
+          lat: item.lat || null,
+          lng: item.lng || null
+        }));
+      });
+    });
     const res = await fetch(DB_URL + '.json', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ teams: db })
+      body: JSON.stringify({ teams: clean })
     });
     if (!res.ok) throw new Error(res.status);
     setSaveBadge('ok', '저장됨 ✓');
   } catch(e) { setSaveBadge('', '저장 실패'); }
-}
-
-function debounceSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveDb, 1200); }
-function setSaveBadge(cls, txt) {
-  const b = document.getElementById('saveBadge');
-  b.className = 'save-badge' + (cls ? ' '+cls : '');
-  b.textContent = txt;
 }
 
 function renderTree() {
