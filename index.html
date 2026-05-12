@@ -257,7 +257,11 @@ async function loadDb() {
 async function saveDb() {
   setSaveBadge('saving', '저장 중...');
   try {
-    const res = await fetch(DB_URL + '.json', { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ teams: db }) });
+    const res = await fetch(DB_URL + '.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teams: db })
+    });
     if (!res.ok) throw new Error(res.status);
     setSaveBadge('ok', '저장됨 ✓');
   } catch(e) { setSaveBadge('', '저장 실패'); }
