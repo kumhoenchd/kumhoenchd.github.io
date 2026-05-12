@@ -17,18 +17,20 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
 
-header{background:#0a0a0a;border-bottom:2px solid var(--red);padding:0 24px;position:sticky;top:0;z-index:100;}
-.header-top{height:56px;display:flex;align-items:center;justify-content:space-between;}
-.logo-area{display:flex;align-items:center;gap:14px;}
-.kumho-logo-img{height:28px;}
-.header-divider{width:1px;height:28px;background:var(--border);margin:0 4px;}
-.header-titles{display:flex;flex-direction:column;gap:1px;}
-.header-title{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
-.header-sub{font-size:11px;color:var(--text2);}
-.header-right{display:flex;align-items:center;gap:8px;}
-.save-badge{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text2);background:var(--surface2);}
-.save-badge.ok{color:#3fb950;border-color:rgba(63,185,80,0.3);background:rgba(63,185,80,0.08);}
-.save-badge.saving{color:var(--y2025);border-color:rgba(245,158,11,0.3);}
+<header>
+  <div class="header-top">
+    <div class="logo-area">
+      <img src="금호건설(국문)_B.jpg" style="height:30px;object-fit:contain;">
+      <div class="header-divider"></div>
+      <div style="overflow:hidden;height:34px;width:34px;flex-shrink:0;">
+        <img src="ARTERA_시그니처_네이비.png" style="height:72px;margin-top:-4px;margin-left:-17px;object-fit:none;">
+      </div>
+      <div class="header-divider"></div>
+      <div class="header-titles">
+        <div class="header-title">주택본부 수주검토 사업장 현황</div>
+        <div class="header-sub">금호건설 주택본부</div>
+      </div>
+    </div>
 
 /* 검색바 */
 .search-bar{padding:8px 0 10px;}
