@@ -245,7 +245,7 @@ async function loadDb() {
   try {
     const res = await fetch(DB_URL + '.json');
     const rec = await res.json();
-    if (rec && rec.teams) {
+    if (rec && rec.teams && Object.keys(rec.teams).length > 0) {
       db = {};
       TEAMS.forEach(t => {
         db[t] = {};
