@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>주택본부 수주검토 사업장</title>
+<title>주택본부 수주검토 사업장 현황</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -16,15 +16,35 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-header{background:#0a0a0a;border-bottom:2px solid var(--red);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.logo-area{display:flex;align-items:center;gap:12px;}
-.kumho-logo{width:32px;height:32px;flex-shrink:0;}
-.header-title{font-size:15px;font-weight:700;letter-spacing:-0.3px;color:#fff;}
-.header-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+
+header{background:#0a0a0a;border-bottom:2px solid var(--red);padding:0 24px;position:sticky;top:0;z-index:100;}
+.header-top{height:56px;display:flex;align-items:center;justify-content:space-between;}
+.logo-area{display:flex;align-items:center;gap:14px;}
+.kumho-logo-img{height:28px;}
+.header-divider{width:1px;height:28px;background:var(--border);margin:0 4px;}
+.header-titles{display:flex;flex-direction:column;gap:1px;}
+.header-title{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
+.header-sub{font-size:11px;color:var(--text2);}
 .header-right{display:flex;align-items:center;gap:8px;}
 .save-badge{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--text2);background:var(--surface2);}
 .save-badge.ok{color:#3fb950;border-color:rgba(63,185,80,0.3);background:rgba(63,185,80,0.08);}
 .save-badge.saving{color:var(--y2025);border-color:rgba(245,158,11,0.3);}
+
+/* 검색바 */
+.search-bar{padding:8px 0 10px;}
+.search-wrap{position:relative;}
+.search-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Pretendard',sans-serif;font-size:13px;padding:8px 12px 8px 36px;border-radius:6px;outline:none;transition:border-color 0.15s;}
+.search-input:focus{border-color:var(--red);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;}
+.search-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;z-index:200;max-height:280px;overflow-y:auto;display:none;}
+.search-results.show{display:block;}
+.search-item{padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--border2);transition:background 0.1s;}
+.search-item:last-child{border-bottom:none;}
+.search-item:hover{background:var(--surface2);}
+.search-item-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.search-item-meta{font-size:11px;color:var(--text2);margin-top:2px;}
+.search-item-addr{font-size:10px;color:var(--text3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
 .app{flex:1;display:grid;grid-template-columns:320px 1fr;min-height:calc(100vh - 56px);}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
 .tree-nav{flex:1;overflow-y:auto;padding:8px 0;}
@@ -53,9 +73,9 @@ header{background:#0a0a0a;border-bottom:2px solid var(--red);padding:0 20px;heig
 .project-item.active{background:var(--red-glow);border-color:rgba(232,0,29,0.25);}
 .project-dot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0;}
 .project-info{flex:1;min-width:0;}
-.project-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.project-addr{font-size:10px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
-.project-memo{font-size:10px;color:var(--text3);margin-top:1px;}
+.project-name{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-all;}
+.project-addr{font-size:10px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
+.project-memo{font-size:10px;color:var(--text3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-all;}
 .project-actions{display:flex;gap:3px;opacity:0;transition:opacity 0.15s;flex-shrink:0;}
 .project-item:hover .project-actions{opacity:1;}
 .icon-btn{width:22px;height:22px;border-radius:4px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
@@ -100,10 +120,6 @@ select option{background:var(--surface2);}
 .year-pill.selected[data-year="2026"]{background:rgba(232,0,29,0.15);border-color:var(--y2026);}
 .year-pill.selected[data-year="2025"]{background:rgba(245,158,11,0.15);border-color:var(--y2025);}
 .year-pill.selected[data-year="2024"]{background:rgba(63,185,80,0.15);border-color:var(--y2024);}
-.progress-wrap{padding:8px 14px;border-top:1px solid var(--border2);}
-.progress-bar-track{height:2px;background:var(--border2);border-radius:2px;overflow:hidden;}
-.progress-bar-fill{height:100%;background:var(--red);border-radius:2px;width:0%;transition:width 0.3s;}
-.progress-label{font-size:10px;color:var(--text3);margin-top:4px;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:12px;color:var(--text);z-index:9999;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.ok{border-color:rgba(63,185,80,0.4);}
@@ -116,29 +132,39 @@ select option{background:var(--surface2);}
 <body>
 
 <header>
-  <div class="logo-area">
-    <svg class="kumho-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" fill="#E8001D" rx="8"/>
-      <path d="M18 72 L18 38 Q18 28 28 28 L72 28 Q80 28 80 36 Q80 44 72 44 L44 44 L44 72 Q44 82 34 82 Q24 82 18 72Z" fill="white" stroke="none"/>
-    </svg>
-    <div>
-      <div class="header-title">주택본부 수주검토 사업장</div>
-      <div class="header-sub">금호건설 주택본부</div>
+  <div class="header-top">
+    <div class="logo-area">
+      <!-- 금호건설 로고 SVG -->
+      <svg class="kumho-logo-img" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+        <rect width="46" height="46" x="0" y="2" fill="#E8001D" rx="4"/>
+        <path d="M8 38 L8 18 Q8 12 14 12 L38 12 Q44 12 44 18 Q44 24 38 24 L22 24 L22 38 Q22 44 16 44 Q8 44 8 38Z" fill="white"/>
+        <text x="54" y="34" font-family="Pretendard,Arial,sans-serif" font-size="22" font-weight="700" fill="white" letter-spacing="-0.5">금호건설</text>
+      </svg>
+      <div class="header-divider"></div>
+      <div class="header-titles">
+        <div class="header-title">주택본부 수주검토 사업장 현황</div>
+        <div class="header-sub">금호건설 주택본부</div>
+      </div>
     </div>
-  </div>
-  <div class="header-right">
-    <span class="save-badge" id="saveBadge">로딩 중...</span>
-    <button class="btn" style="font-size:11px;padding:5px 10px;color:#f85149;border-color:#f85149;" onclick="clearAll()">전체삭제</button>
+    <div class="header-right">
+      <span class="save-badge" id="saveBadge">로딩 중...</span>
+      <button class="btn" style="font-size:11px;padding:5px 10px;color:#f85149;border-color:#f85149;" onclick="clearAll()">전체삭제</button>
+    </div>
   </div>
 </header>
 
 <div class="app">
   <aside class="sidebar">
-    <div class="tree-nav" id="treeNav"></div>
-    <div id="progressWrap" class="progress-wrap" style="display:none;">
-      <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
-      <div class="progress-label" id="progressLabel">변환 중...</div>
+    <!-- 검색창 -->
+    <div style="padding:10px 10px 0;position:relative;">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" id="searchInput" placeholder="사업장 검색... (예: 청주, 재건축)" oninput="onSearch(this.value)" onblur="setTimeout(()=>hideSearch(),200)">
+        <div class="search-results" id="searchResults"></div>
+      </div>
     </div>
+
+    <div class="tree-nav" id="treeNav"></div>
     <div class="sidebar-bottom">
       <button class="add-btn" onclick="openAdd()">＋ 사업장 추가</button>
     </div>
@@ -148,10 +174,6 @@ select option{background:var(--surface2);}
     <div id="mapOverlay" class="map-overlay">
       <div class="spinner"></div>
       <div class="overlay-text">지도 로딩 중...</div>
-    </div>
-    <div id="mapLoading" class="map-overlay hidden">
-      <div class="spinner"></div>
-      <div class="overlay-text">주소 변환 중...</div>
     </div>
     <div id="map"></div>
     <div class="map-legend" id="mapLegend" style="display:none;">
@@ -188,11 +210,11 @@ select option{background:var(--surface2);}
     </div>
     <div class="form-row">
       <label class="form-label">사업장명 *</label>
-      <input type="text" id="f-name" placeholder="예: 서울 강남구 역삼동 재건축">
+      <input type="text" id="f-name" placeholder="예: 청주 테크노폴리스 재건축">
     </div>
     <div class="form-row">
       <label class="form-label">주소 *</label>
-      <input type="text" id="f-addr" placeholder="예: 서울 강남구 역삼동 123" onkeydown="if(event.key==='Enter')submitModal()">
+      <input type="text" id="f-addr" placeholder="예: 충북 청주시 흥덕구 옥산면" onkeydown="if(event.key==='Enter')submitModal()">
     </div>
     <div class="form-row">
       <label class="form-label">메모</label>
@@ -251,20 +273,13 @@ async function loadDb() {
         db[t] = {};
         YEARS.forEach(y => {
           db[t][y] = (rec.teams[t]?.[y] || []).map(item => ({
-            id: item.id,
-            name: item.name,
-            addr: item.addr,
-            memo: item.memo || '',
-            lat: item.lat || null,
-            lng: item.lng || null,
-            _marker: null,
-            _latlng: null
+            id: item.id, name: item.name, addr: item.addr,
+            memo: item.memo || '', lat: item.lat || null, lng: item.lng || null,
+            _marker: null, _latlng: null
           }));
         });
       });
-    } else {
-      db = emptyDb();
-    }
+    } else { db = emptyDb(); }
   } catch(e) { db = emptyDb(); }
   renderTree();
   setSaveBadge('ok', '동기화됨');
@@ -297,6 +312,44 @@ function setSaveBadge(cls, txt) {
   b.textContent = txt;
 }
 
+// ── 검색 ──────────────────────────────────────────────────────────────────
+function onSearch(q) {
+  const box = document.getElementById('searchResults');
+  if (!q.trim()) { box.classList.remove('show'); return; }
+  const kw = q.toLowerCase();
+  const results = [];
+  TEAMS.forEach(team => YEARS.forEach(year => {
+    (db[team]?.[year]||[]).forEach(item => {
+      if (item.name.toLowerCase().includes(kw) || item.addr.toLowerCase().includes(kw) || (item.memo||'').toLowerCase().includes(kw)) {
+        results.push({ item, team, year });
+      }
+    });
+  }));
+  if (!results.length) {
+    box.innerHTML = '<div style="padding:12px;font-size:12px;color:var(--text3);text-align:center;">검색 결과 없음</div>';
+    box.classList.add('show');
+    return;
+  }
+  box.innerHTML = results.map(({item,team,year}) => `
+    <div class="search-item" onmousedown="selectSearchItem('${item.id}','${team}','${year}')">
+      <div class="search-item-name">${item.name}</div>
+      <div class="search-item-meta">${team} · ${year}년</div>
+      <div class="search-item-addr">${item.addr}</div>
+    </div>`).join('');
+  box.classList.add('show');
+}
+
+function hideSearch() {
+  document.getElementById('searchResults').classList.remove('show');
+}
+
+function selectSearchItem(id, team, year) {
+  document.getElementById('searchInput').value = '';
+  hideSearch();
+  focusProject(id, team, year);
+}
+
+// ── 트리 ──────────────────────────────────────────────────────────────────
 function renderTree() {
   const nav = document.getElementById('treeNav');
   nav.innerHTML = '';
@@ -365,6 +418,7 @@ function toggleYear(team, year) {
   if (openYear) showTeamYearOnMap(team, year);
 }
 
+// ── 마커 (아테라 A자 심벌) ────────────────────────────────────────────────
 function clearMarkers() { allMarkers.forEach(m => m.marker && m.marker.setMap(null)); allMarkers = []; }
 
 function restoreMarkers() {
@@ -396,12 +450,13 @@ function showTeamYearOnMap(team, year) {
 
 function placeMarker(item, year, latlng) {
   const c = YCLR[year] || '#E8001D';
-const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" viewBox="0 0 36 44">
-    <path d="M18 0C8.059 0 0 8.059 0 18c0 11.25 18 26 18 26S36 29.25 36 18C36 8.059 27.941 0 18 0z" fill="${c}"/>
-    <path d="M10 22 L10 13 Q10 10 13 10 L26 10 Q28 10 28 12.5 Q28 15 26 15 L16 15 L16 22 Q16 25 13 25 Q10 25 10 22Z" fill="white"/>
+  // 아테라 A자 심벌 마커
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="38" height="46" viewBox="0 0 38 46">
+    <path d="M19 0C9.059 0 1 8.059 1 18c0 11.25 18 28 18 28S37 29.25 37 18C37 8.059 28.941 0 19 0z" fill="${c}" stroke="white" stroke-width="1.5"/>
+    <path d="M19 7 L27 29 L24 29 L22 24 L16 24 L14 29 L11 29 Z M19 12 L17 21 L21 21 Z" fill="white"/>
   </svg>`;
   const imgSrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
-  const img = new kakao.maps.MarkerImage(imgSrc, new kakao.maps.Size(36,44), { offset: new kakao.maps.Point(18,44) });
+  const img = new kakao.maps.MarkerImage(imgSrc, new kakao.maps.Size(38,46), { offset: new kakao.maps.Point(19,46) });
   const marker = new kakao.maps.Marker({ position:latlng, map:kakaoMap, image:img, title:item.name });
   kakao.maps.event.addListener(marker, 'click', () => {
     infowindow.setContent(buildPopup(item, year));
@@ -414,10 +469,10 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" view
 
 function buildPopup(item, year) {
   const c = YCLR[year]||'#E8001D';
-  return `<div style="padding:12px 14px;min-width:210px;font-family:Pretendard,sans-serif;">
+  return `<div style="padding:12px 14px;min-width:210px;max-width:260px;font-family:Pretendard,sans-serif;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
       <div style="width:10px;height:10px;border-radius:50%;background:${c};flex-shrink:0;"></div>
-      <strong style="font-size:13px;color:#1a1a2e;">${item.name}</strong>
+      <strong style="font-size:13px;color:#1a1a2e;word-break:keep-all;">${item.name}</strong>
     </div>
     <div style="font-size:11px;color:#666;margin-bottom:2px;">${item.addr}</div>
     <div style="font-size:11px;color:#999;">${year}년 수주검토${item.memo?' · '+item.memo:''}</div>
@@ -439,6 +494,13 @@ function highlightProject(id) {
   if (el) { el.classList.add('active'); el.scrollIntoView({ block:'nearest', behavior:'smooth' }); }
 }
 
+function updateStats() {
+  let count = 0;
+  TEAMS.forEach(t => YEARS.forEach(y => count += (db[t]?.[y]?.filter(i=>i.lat)||[]).length));
+  document.getElementById('mapStat').textContent = `표시: ${count}건`;
+}
+
+// ── 지오코딩 ──────────────────────────────────────────────────────────────
 function geocodeItem(item, year, cb) {
   if (!kakaoReady) { setTimeout(() => geocodeItem(item, year, cb), 500); return; }
   kakaoGeocoder.addressSearch(item.addr, (result, status) => {
@@ -451,6 +513,7 @@ function geocodeItem(item, year, cb) {
   });
 }
 
+// ── 모달 ──────────────────────────────────────────────────────────────────
 function openAdd() {
   editingId = null;
   document.getElementById('modalTitle').textContent = '사업장 추가';
@@ -509,7 +572,7 @@ function submitModal() {
     if (oldItem) {
       if (oldItem._marker) oldItem._marker.setMap(null);
       if (oldTeam !== team || oldYear !== year) db[oldTeam][oldYear] = db[oldTeam][oldYear].filter(x => x.id !== editingId);
-      const newItem = { ...oldItem, name, addr, memo, lat:null, lng:null };
+      const newItem = { ...oldItem, name, addr, memo, lat:null, lng:null, _marker:null, _latlng:null };
       if (oldTeam !== team || oldYear !== year) {
         if (!db[team]) db[team] = {};
         if (!db[team][year]) db[team][year] = [];
@@ -518,10 +581,10 @@ function submitModal() {
         const idx = db[team][year].findIndex(x => x.id === editingId);
         if (idx >= 0) db[team][year][idx] = newItem;
       }
-      geocodeItem(newItem, year, ok => { if (!ok) showToast('주소를 찾을 수 없습니다', 'err'); renderTree(); updateMapStat(); debounceSave(); });
+      geocodeItem(newItem, year, ok => { if (!ok) showToast('주소를 찾을 수 없습니다', 'err'); renderTree(); updateStats(); debounceSave(); });
     }
   } else {
-    const item = { id: Date.now().toString(), name, addr, memo, lat:null, lng:null };
+    const item = { id: Date.now().toString(), name, addr, memo, lat:null, lng:null, _marker:null, _latlng:null };
     if (!db[team]) db[team] = {};
     if (!db[team][year]) db[team][year] = [];
     db[team][year].push(item);
@@ -529,7 +592,7 @@ function submitModal() {
     geocodeItem(item, year, ok => {
       if (ok) { kakaoMap.setCenter(item._latlng); kakaoMap.setLevel(5); showToast(`"${name}" 추가됨 ✓`, 'ok'); }
       else showToast('주소를 찾을 수 없습니다', 'err');
-      renderTree(); updateMapStat(); debounceSave();
+      renderTree(); updateStats(); debounceSave();
     });
   }
   closeModal(); renderTree();
@@ -541,7 +604,7 @@ function deleteFromModal() {
     const idx = db[t]?.[y]?.findIndex(x => x.id === editingId);
     if (idx >= 0) { if (db[t][y][idx]._marker) db[t][y][idx]._marker.setMap(null); db[t][y].splice(idx, 1); }
   }));
-  closeModal(); renderTree(); updateMapStat(); debounceSave();
+  closeModal(); renderTree(); updateStats(); debounceSave();
   showToast('삭제됐습니다', 'ok');
 }
 
@@ -550,7 +613,7 @@ function deleteProject(id, team, year) {
   if (idx < 0) return;
   if (db[team][year][idx]._marker) db[team][year][idx]._marker.setMap(null);
   db[team][year].splice(idx, 1);
-  renderTree(); updateMapStat(); debounceSave();
+  renderTree(); updateStats(); debounceSave();
   showToast('삭제됐습니다', 'ok');
 }
 
@@ -558,14 +621,8 @@ function clearAll() {
   if (!confirm('모든 데이터를 삭제할까요?')) return;
   allMarkers.forEach(m => m.marker && m.marker.setMap(null));
   allMarkers = []; db = emptyDb();
-  renderTree(); updateMapStat(); saveDb();
+  renderTree(); updateStats(); saveDb();
   showToast('전체 삭제됐습니다', 'ok');
-}
-
-function updateMapStat() {
-  let count = 0;
-  TEAMS.forEach(t => YEARS.forEach(y => count += (db[t]?.[y]?.filter(i=>i.lat)||[]).length));
-  document.getElementById('mapStat').textContent = `표시: ${count}건`;
 }
 
 function showToast(msg, type='') {
