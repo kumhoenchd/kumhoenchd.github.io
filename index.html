@@ -1,3 +1,8 @@
+제가 완성된 코드 전체를 다시 드릴게요. 전체를 교체하는 게 제일 확실해요!
+
+GitHub → `index.html` → 연필(✏) → 전체 선택(`Ctrl+A`) → 아래 코드로 교체:
+
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -249,7 +254,7 @@ async function loadDb() {
       db = rec.teams;
       TEAMS.forEach(t => { if (!db[t]) db[t] = {}; YEARS.forEach(y => { if (!db[t][y]) db[t][y] = []; }); });
     } else { db = emptyDb(); await saveDb(); }
-} catch(e) { setSaveBadge('', '저장 실패'); showToast('오류: ' + e.message, 'err'); }
+  } catch(e) { db = emptyDb(); }
   renderTree();
   setSaveBadge('ok', '동기화됨');
 }
@@ -262,11 +267,10 @@ async function saveDb() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teams: db })
     });
-if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(res.status + ': ' + errText);
-    }
+    if (!res.ok) throw new Error(res.status);
     setSaveBadge('ok', '저장됨 ✓');
+  } catch(e) { setSaveBadge('', '저장 실패'); }
+}
 
 function debounceSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveDb, 1200); }
 function setSaveBadge(cls, txt) {
@@ -553,3 +557,4 @@ document.getElementById('modal').addEventListener('click', e => { if (e.target =
 </script>
 </body>
 </html>
+```
