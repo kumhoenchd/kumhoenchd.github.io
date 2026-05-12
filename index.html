@@ -249,7 +249,7 @@ async function loadDb() {
       db = rec.teams;
       TEAMS.forEach(t => { if (!db[t]) db[t] = {}; YEARS.forEach(y => { if (!db[t][y]) db[t][y] = []; }); });
     } else { db = emptyDb(); await saveDb(); }
-  } catch(e) { db = emptyDb(); }
+} catch(e) { setSaveBadge('', '저장 실패'); showToast('오류: ' + e.message, 'err'); }
   renderTree();
   setSaveBadge('ok', '동기화됨');
 }
@@ -262,10 +262,11 @@ async function saveDb() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ teams: db })
     });
-    if (!res.ok) throw new Error(res.status);
+if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(res.status + ': ' + errText);
+    }
     setSaveBadge('ok', '저장됨 ✓');
-  } catch(e) { setSaveBadge('', '저장 실패'); }
-}
 
 function debounceSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveDb, 1200); }
 function setSaveBadge(cls, txt) {
