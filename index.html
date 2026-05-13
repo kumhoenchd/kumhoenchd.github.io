@@ -269,8 +269,9 @@ async function loadDb() {
     const rec = await res.json();
     db = (rec && rec.projects && Array.isArray(rec.projects)) ? rec.projects.map(i => ({...i,_marker:null,_latlng:null})) : [];
   } catch(e) { db = []; }
-  renderTree();
+renderTree();
   setSaveBadge('ok','동기화됨');
+  if(kakaoReady) restoreMarkers();
 }
 
 async function saveDb() {
@@ -539,7 +540,7 @@ function handleFile(e) {
       let added=0;
       rows.forEach(row=>{
         const keys = Object.keys(row);
-        const findKey = (candidates) => keys.find(k => candidates.some(c => k.replace(/[*\s]/g,'').toLowerCase() === c.toLowerCase())) || null;
+const findKey = (candidates) => keys.find(k => candidates.some(c => k.replace(/[*()\s㎡\/]/g,'').toLowerCase() === c.replace(/[*()\s㎡\/]/g,'').toLowerCase())) || null;
         const getVal = (candidates, def='') => { const k=findKey(candidates); return k ? String(row[k]||def).trim() : def; };
         const name=getVal(['사업장명','사업장이름','name']);
         const addr=getVal(['주소','address','addr','도로명주소','지번주소']);
