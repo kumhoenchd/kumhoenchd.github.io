@@ -137,7 +137,6 @@ input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(36,4
     </div>
     <div class="header-right">
       <span class="save-badge" id="saveBadge">로딩 중...</span>
-      <button class="btn" style="font-size:11px;padding:5px 10px;color:#f85149;border-color:#f85149;" onclick="clearAll()">전체삭제</button>
     </div>
   </div>
 </header>
@@ -164,12 +163,12 @@ input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(36,4
       <div class="overlay-text">지도 로딩 중...</div>
     </div>
     <div id="map"></div>
-    <div class="map-legend" id="mapLegend" style="display:none;">
+<div class="map-legend" id="mapLegend" style="display:none;">
       <div class="leg-title">연도별 구분</div>
-      <div class="leg-row"><div class="leg-dot" style="background:#c0001d"></div><span>2026년</span></div>
-      <div class="leg-row"><div class="leg-dot" style="background:#F47F3F"></div><span>2025년</span></div>
-      <div class="leg-row"><div class="leg-dot" style="background:#2a9d5c"></div><span>2024년</span></div>
-      <div class="map-stat" id="mapStat">표시: 0건</div>
+      <div class="leg-row"><div class="leg-dot" style="background:#c0001d"></div><span>2026년 <span id="cnt2026" style="color:#c0001d;font-weight:600;">0건</span></span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#F47F3F"></div><span>2025년 <span id="cnt2025" style="color:#F47F3F;font-weight:600;">0건</span></span></div>
+      <div class="leg-row"><div class="leg-dot" style="background:#2a9d5c"></div><span>2024년 <span id="cnt2024" style="color:#2a9d5c;font-weight:600;">0건</span></span></div>
+      <div class="map-stat" id="mapStat">전체: 0건</div>
     </div>
   </main>
 </div>
@@ -474,9 +473,13 @@ function highlightItem(id) {
 }
 
 function updateStats() {
-  const cnt=db.filter(i=>i.lat).length;
-  const el=document.getElementById('mapStat');
-  if(el) el.textContent=`표시: ${cnt}건`;
+  const total = db.filter(i=>i.lat).length;
+  ['2026','2025','2024'].forEach(y => {
+    const el = document.getElementById('cnt'+y);
+    if(el) el.textContent = db.filter(i=>i.lat&&i.year===y).length+'건';
+  });
+  const el = document.getElementById('mapStat');
+  if(el) el.textContent = `전체: ${total}건`;
 }
 
 // ── 검색 (정보제공자 포함) ────────────────────────────────────────────────
