@@ -405,40 +405,16 @@ function placeMarker(item, latlng) {
   if(item._marker) { item._marker.setMap(null); item._marker=null; }
   const COLORS = {'2026':'#c0001d','2025':'#F47F3F','2024':'#2a9d5c'};
   const c = COLORS[item.year] || '#242A5C';
-  const W=40, H=52, R=14;
-  const canvas = document.createElement('canvas');
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d');
-  ctx.beginPath();
-  ctx.moveTo(W/2, H-2);
-  ctx.bezierCurveTo(W/2, H-2, 2, H*0.6, 2, R+2);
-  ctx.arc(W/2, R+2, R, Math.PI, 0, false);
-  ctx.bezierCurveTo(W-2, H*0.6, W/2, H-2, W/2, H-2);
-  ctx.fillStyle = c;
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(W/2, R+2, R-4, 0, Math.PI*2);
-  ctx.fillStyle = 'white';
-  ctx.fill();
-  const artImg = new Image();
-  artImg.onload = function() {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(W/2, R+2, R-5, 0, Math.PI*2);
-    ctx.clip();
-    const iw = (R-5)*2*1.2, ih = iw * (artImg.height/artImg.width);
-    ctx.drawImage(artImg, W/2-iw/2, R+2-ih/2, iw, ih);
-    ctx.restore();
-    const mi = new kakao.maps.MarkerImage(canvas.toDataURL(), new kakao.maps.Size(W,H), {offset:new kakao.maps.Point(W/2,H)});
-    const marker = new kakao.maps.Marker({position:latlng,map:kakaoMap,image:mi,title:item.name});
-    kakao.maps.event.addListener(marker,'click',()=>{infowindow.setContent(buildPopup(item));infowindow.open(kakaoMap,marker);highlightItem(item.id);});
-    allMarkers.push(marker);
-    item._marker = marker;
-  };
-  artImg.src = ARTERA_SRC;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="32" viewBox="0 0 24 32">
+    <path d="M12 1C6.477 1 2 5.477 2 11c0 7.5 10 20 10 20S22 18.5 22 11C22 5.477 17.523 1 12 1z" fill="${c}" stroke="white" stroke-width="1.5"/>
+    <circle cx="12" cy="11" r="4.5" fill="white"/>
+  </svg>`;
+  const imgSrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+  const mi = new kakao.maps.MarkerImage(imgSrc, new kakao.maps.Size(24,32), {offset:new kakao.maps.Point(12,32)});
+  const marker = new kakao.maps.Marker({position:latlng,map:kakaoMap,image:mi,title:item.name});
+  kakao.maps.event.addListener(marker,'click',()=>{infowindow.setContent(buildPopup(item));infowindow.open(kakaoMap,marker);highlightItem(item.id);});
+  allMarkers.push(marker);
+  item._marker = marker;
   item._latlng = latlng;
 }
 
@@ -539,29 +515,30 @@ function handleFile(e) {
       const rows=XLSX.utils.sheet_to_json(ws,{defval:''});
       let added=0;
       rows.forEach(row=>{
-        const keys = Object.keys(row);
-const findKey = (candidates) => keys.find(k => candidates.some(c => k.replace(/[*()\s㎡\/]/g,'').toLowerCase() === c.replace(/[*()\s㎡\/]/g,'').toLowerCase())) || null;
+  const keys = Object.keys(row);
+        const clean = k => String(k).replace(/[*()\s㎡\/\*]/g,'').toLowerCase();
+        const findKey = candidates => keys.find(k => candidates.some(c => clean(k) === clean(c))) || null;
         const getVal = (candidates, def='') => { const k=findKey(candidates); return k ? String(row[k]||def).trim() : def; };
-        const name=getVal(['사업장명','사업장이름','name']);
-        const addr=getVal(['주소','address','addr','도로명주소','지번주소']);
-        const year=getVal(['연도','year'],'2026');
-        if(!name||!addr) return;
-        const rawRegion=getVal(['시/도','시도','region','광역시도']);
-        const rawSub=getVal(['시/군/구','시군구','subregion','구시군']);
-        const item={
-          id:Date.now().toString()+Math.random().toString(36).slice(2),
-          name,addr,
-          year:['2026','2025','2024'].includes(year)?year:'2026',
-          region:rawRegion||getRegion(addr),
-          subregion:rawSub||getSubregion(addr),
-          provider:getVal(['정보제공자','제공자','provider']),
-          date:getVal(['검토일자','일자','date']),
-          site:getVal(['대지면적','대지','site']),
-          floor:getVal(['연면적','연','floor']),
-          floors:getVal(['층수','층','floors']),
-          units:getVal(['세대수','세대','units']),
-          memo:getVal(['비고','메모','memo','note']),
-          lat:null,lng:null,_marker:null,_latlng:null
+        const name = getVal(['사업장명','사업장이름','name']);
+        const addr = getVal(['주소','address','addr','도로명주소','지번주소']);
+        const year = getVal(['연도','year'], '2026');
+        if(!name || !addr) return;
+        const rawRegion = getVal(['시도','시/도','region']);
+        const rawSub = getVal(['시군구','시/군/구','subregion']);
+        const item = {
+          id: Date.now().toString() + Math.random().toString(36).slice(2),
+          name, addr,
+          year: ['2026','2025','2024'].includes(year) ? year : '2026',
+          region: rawRegion || getRegion(addr),
+          subregion: rawSub || getSubregion(addr),
+          provider: getVal(['정보제공자','제공자','provider']),
+          date: getVal(['검토일자','일자','date']),
+          site: getVal(['대지면적','site']),
+          floor: getVal(['연면적','floor']),
+          floors: getVal(['층수','floors']),
+          units: getVal(['세대수','units']),
+          memo: getVal(['비고','메모','memo','note']),
+          lat:null, lng:null, _marker:null, _latlng:null
         };
         db.push(item); added++;
         geocodeItem(item);
