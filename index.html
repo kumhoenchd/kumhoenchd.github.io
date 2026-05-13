@@ -412,8 +412,8 @@ function placeMarker(item, latlng) {
   const imgSrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
   const mi = new kakao.maps.MarkerImage(imgSrc, new kakao.maps.Size(24,32), {offset:new kakao.maps.Point(12,32)});
   const marker = new kakao.maps.Marker({position:latlng,map:kakaoMap,image:mi,title:item.name});
-  kakao.maps.event.addListener(marker,'click',()=>{infowindow.setContent(buildPopup(item));infowindow.open(kakaoMap,marker);highlightItem(item.id);});
-  allMarkers.push(marker);
+kakao.maps.event.addListener(marker,'click',()=>{infowindow.setContent(buildPopup(item));infowindow.open(kakaoMap,marker);highlightItem(item.id);});
+  kakao.maps.event.addListener(marker,'dblclick',()=>{kakaoMap.setCenter(item._latlng);kakaoMap.setLevel(3);});  allMarkers.push(marker);
   item._marker = marker;
   item._latlng = latlng;
 }
