@@ -402,19 +402,42 @@ function restoreMarkers() {
 
 function placeMarker(item, latlng) {
   if(item._marker) { item._marker.setMap(null); item._marker=null; }
-  const mi = new kakao.maps.MarkerImage(
-    ARTERA_SRC,
-new kakao.maps.Size(36, 36),
-{ offset: new kakao.maps.Point(18, 36) }
-  );
-  const marker = new kakao.maps.Marker({position:latlng,map:kakaoMap,image:mi,title:item.name});
-  kakao.maps.event.addListener(marker,'click',()=>{
-    infowindow.setContent(buildPopup(item));
-    infowindow.open(kakaoMap,marker);
-    highlightItem(item.id);
-  });
-  allMarkers.push(marker);
-  item._marker = marker;
+  const COLORS = {'2026':'#c0001d','2025':'#F47F3F','2024':'#2a9d5c'};
+  const c = COLORS[item.year] || '#242A5C';
+  const W=40, H=52, R=14;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.beginPath();
+  ctx.moveTo(W/2, H-2);
+  ctx.bezierCurveTo(W/2, H-2, 2, H*0.6, 2, R+2);
+  ctx.arc(W/2, R+2, R, Math.PI, 0, false);
+  ctx.bezierCurveTo(W-2, H*0.6, W/2, H-2, W/2, H-2);
+  ctx.fillStyle = c;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(W/2, R+2, R-4, 0, Math.PI*2);
+  ctx.fillStyle = 'white';
+  ctx.fill();
+  const artImg = new Image();
+  artImg.onload = function() {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(W/2, R+2, R-5, 0, Math.PI*2);
+    ctx.clip();
+    const iw = (R-5)*2*1.2, ih = iw * (artImg.height/artImg.width);
+    ctx.drawImage(artImg, W/2-iw/2, R+2-ih/2, iw, ih);
+    ctx.restore();
+    const mi = new kakao.maps.MarkerImage(canvas.toDataURL(), new kakao.maps.Size(W,H), {offset:new kakao.maps.Point(W/2,H)});
+    const marker = new kakao.maps.Marker({position:latlng,map:kakaoMap,image:mi,title:item.name});
+    kakao.maps.event.addListener(marker,'click',()=>{infowindow.setContent(buildPopup(item));infowindow.open(kakaoMap,marker);highlightItem(item.id);});
+    allMarkers.push(marker);
+    item._marker = marker;
+  };
+  artImg.src = ARTERA_SRC;
   item._latlng = latlng;
 }
 
