@@ -592,33 +592,6 @@ function handleFile(e){
       if(!rows.length){showToast('데이터가 없습니다','err');return;}
 let added=0;
       rows.forEach((row,idx)=>{
-        // 모든 키 정규화 (특수문자·공백 제거, 소문자)
-        const norm={};
-        Object.keys(row).forEach(k=>{
-          const v=row[k];
-          const nk=String(k).replace(/[*()\s㎡\\/]/g,'').toLowerCase();
-          norm[nk]=v==null?'':String(v).trim();
-        });
-        const gv=(...ks)=>{for(const k of ks){const v=norm[k.toLowerCase()];if(v&&v!=='null'&&v!=='undefined') return v;}return '';};
-        const name=gv('사업장명','name','사업장');
-        const addr=gv('주소','address','addr');
-        const year=gv('연도','year');
-        if(!name||!addr){return;}
-        const yr=['2026','2025','2024'].includes(year)?year:'2026';
-        const item={
-          id:Date.now().toString(36)+Math.random().toString(36).slice(2)+idx,
-          name,addr,year:yr,
-          region:gv('시도','region')||getRegion(addr),
-          subregion:gv('시군구','subregion')||getSub(addr),
-          provider:gv('정보제공자','provider','제공자'),
-          date:gv('검토일자','date','일자'),
-          site:gv('대지면적','site'),
-          floor:gv('연면적','floor'),
-          floors:gv('층수','floors'),
-          units:gv('세대수','units'),
-          memo:gv('비고','memo','note'),
-          lat:null,lng:null,_m:null,_ll:null
-        };
         // 모든 키를 소문자+특수문자제거로 정규화해서 매핑
         const norm={};
         Object.keys(row).forEach(k=>{norm[k.replace(/[*()\s㎡\/]/g,'').toLowerCase()]=String(row[k]||'').trim();});
