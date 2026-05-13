@@ -461,8 +461,8 @@ function piHtml(item){
       <div class="pname">${hl(item.name,kw)}</div>
       <div class="paddr">${hl(item.addr,kw)}</div>
     </div>
-    <div class="pacts admin-only" style="display:none;">
-      <button class="ib" onclick="event.stopPropagation();openEdit('${item.id}')" title="수정">✏</button>
+<div class="pacts admin-only" style="display:${isAdmin?'':'none'};">
+<button class="ib" onclick="event.stopPropagation();openEdit('${item.id}')" title="수정">✏</button>
       <button class="ib del" onclick="event.stopPropagation();delItem('${item.id}')" title="삭제">✕</button>
     </div>
   </div>`;
