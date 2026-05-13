@@ -425,21 +425,18 @@ function renderTree(){
 }
 
 function handleSubClick(region,sub,e){
-  // 더블클릭: 필터 토글, 싱글클릭: 펼치기
-  if(e.detail===2){
-    toggleSubFilter(sub);
-  } else {
-    if(openRegion!==region) openRegion=region;
-    openSub=(openRegion===region&&openSub===sub)?null:sub;
-    renderTree();
-    if(openSub){
-      const items=(getTree()[region]||{})[sub]||[];
-      if(items.length&&kakaoReady){
-        const bounds=new kakao.maps.LatLngBounds();
-        let cnt=0;
-        items.forEach(i=>{if(i.lat&&i.lng){bounds.extend(new kakao.maps.LatLng(i.lat,i.lng));cnt++;}}); 
-        if(cnt>0) kakaoMap.setBounds(bounds);
-      }
+  // 클릭: 필터 토글 + 펼치기 동시
+  toggleSubFilter(sub);
+  if(openRegion!==region) openRegion=region;
+  openSub=(openSub===sub)?null:sub;
+  renderTree();
+  if(subFilter.has(sub)){
+    const items=(getTree()[region]||{})[sub]||[];
+    if(items.length&&kakaoReady){
+      const bounds=new kakao.maps.LatLngBounds();
+      let cnt=0;
+      items.forEach(i=>{if(i.lat&&i.lng){bounds.extend(new kakao.maps.LatLng(i.lat,i.lng));cnt++;}});
+      if(cnt>0) kakaoMap.setBounds(bounds);
     }
   }
 }
