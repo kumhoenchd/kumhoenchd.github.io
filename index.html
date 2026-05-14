@@ -805,7 +805,7 @@ function searchPlace(){
   if(!q) return;
   // 카카오 로컬 REST API 사용
   fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(q)}&size=8`,{
-    headers:{'Authorization':'KakaoAK 9e7a56b9c88d8d70e13b93d0b2aa3a78'}
+    headers:{'Authorization':'KakaoAK 6f377295518df4dcaa4835f962c5b5bc'}
   })
   .then(r=>r.json())
   .then(data=>{
