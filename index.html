@@ -803,7 +803,7 @@ let placeMarkers=[];
 function searchPlace(){
   const q=document.getElementById('placeInput').value.trim();
   if(!q) return;
-  const REST_KEY='여기에_REST_API_키';
+  const REST_KEY='6f377295518df4dcaa4835f962c5b5bc';
   // 1차: 키워드 검색
   fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(q)}&size=8`,{
     headers:{'Authorization':'KakaoAK '+REST_KEY}
