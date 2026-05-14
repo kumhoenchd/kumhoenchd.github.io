@@ -873,7 +873,7 @@ function addPlaceMarker(p){
   clearPlaceMarkers();
   const ll=new kakao.maps.LatLng(p.y,p.x);
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
-    <path d="M14 1C7.925 1 3 5.925 3 12c0 8.25 11 23 11 23S25 20.25 25 12C25 5.925 20.075 1 14 1z" fill="#F47F3F" stroke="white" stroke-width="1.5"/>
+    <path d="M14 1C7.925 1 3 5.925 3 12c0 8.25 11 23 11 23S25 20.25 25 12C25 5.925 20.075 1 14 1z" fill="#1D6FE8" stroke="white" stroke-width="1.5"/>
     <circle cx="14" cy="12" r="5" fill="white"/></svg>`;
   const mi=new kakao.maps.MarkerImage('data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg))),new kakao.maps.Size(28,36),{offset:new kakao.maps.Point(14,36)});
   const mk=new kakao.maps.Marker({position:ll,map:map,image:mi,title:p.place_name});
