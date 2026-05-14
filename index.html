@@ -803,27 +803,50 @@ let placeMarkers=[];
 function searchPlace(){
   const q=document.getElementById('placeInput').value.trim();
   if(!q) return;
-  // 카카오 로컬 REST API 사용
+  const REST_KEY='여기에_REST_API_키';
+  // 1차: 키워드 검색
   fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(q)}&size=8`,{
-    headers:{'Authorization':'KakaoAK 6f377295518df4dcaa4835f962c5b5bc'}
+    headers:{'Authorization':'KakaoAK '+REST_KEY}
   })
   .then(r=>r.json())
   .then(data=>{
-    if(data.documents&&data.documents.length>0) showPlaceResults(data.documents);
-    else showToast('검색 결과가 없습니다','err');
-  })
-  .catch(()=>{
-    // REST API 실패시 Geocoder로 주소검색 fallback
-    if(gc){
-      gc.addressSearch(q,(result,status)=>{
-        if(status===kakao.maps.services.Status.OK){
-          const p=result[0];
-          clearPlaceMarkers();
-          const ll=new kakao.maps.LatLng(p.y,p.x);
-          addPlaceMarker({place_name:q,road_address_name:p.address_name,x:p.x,y:p.y});
-        } else showToast('검색 결과가 없습니다','err');
+    if(data.documents&&data.documents.length>0){
+      showPlaceResults(data.documents);
+    } else {
+      // 2차: 주소 검색
+      fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(q)}&size=8`,{
+        headers:{'Authorization':'KakaoAK '+REST_KEY}
+      })
+      .then(r=>r.json())
+      .then(data2=>{
+        if(data2.documents&&data2.documents.length>0){
+          // 주소 결과를 장소 형태로 변환
+          const places=data2.documents.map(d=>({
+            place_name:d.address_name,
+            road_address_name:d.road_address?d.road_address.address_name:'',
+            address_name:d.address_name,
+            x:d.x, y:d.y,
+            category_group_name:'주소',
+            phone:'', place_url:''
+          }));
+          showPlaceResults(places);
+        } else {
+          // 3차: Geocoder fallback
+          gc.addressSearch(q,(result,status)=>{
+            if(status===kakao.maps.services.Status.OK){
+              addPlaceMarker({place_name:q,road_address_name:result[0].address_name,address_name:result[0].address_name,x:result[0].x,y:result[0].y});
+            } else showToast('검색 결과가 없습니다','err');
+          });
+        }
       });
     }
+  })
+  .catch(()=>{
+    gc.addressSearch(q,(result,status)=>{
+      if(status===kakao.maps.services.Status.OK){
+        addPlaceMarker({place_name:q,road_address_name:result[0].address_name,address_name:result[0].address_name,x:result[0].x,y:result[0].y});
+      } else showToast('검색 결과가 없습니다','err');
+    });
   });
 }
 
