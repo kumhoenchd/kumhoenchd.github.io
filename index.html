@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>주택본부 수주검토 사업장 현황</title>
+<title>주택개발 수주검토 사업장 현황</title>
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -266,7 +266,7 @@ input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(36,4
         <input type="hidden" id="fyear" value="2026">
       </div>
       <div class="fr"><label class="fl">정보제공자</label><input type="text" id="fprov" placeholder="이름"></div>
-      <div class="fr"><label class="fl">검토일자</label><input type="date" id="fdate"></div>
+      <div class="fr"><label class="fl">정보제공일</label><input type="date" id="fdate"></div>
       <div class="fr"><label class="fl">대지면적 (㎡)</label><input type="text" id="fsite" placeholder="예: 5230"></div>
       <div class="fr"><label class="fl">연면적 (㎡)</label><input type="text" id="ffloor" placeholder="예: 45600"></div>
       <div class="fr"><label class="fl">층수</label><input type="text" id="ffloors" placeholder="예: 35"></div>
@@ -549,7 +549,7 @@ function buildPopup(item){
   const sp=toPy(item.site),fp=toPy(item.floor);
   const rows=[
     item.provider?`<tr><td style="color:#888;white-space:nowrap;padding-right:10px;padding-bottom:3px;">정보제공자</td><td style="color:#333;font-weight:600;">${item.provider}</td></tr>`:'',
-    item.date?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">검토일자</td><td style="color:#333;">${item.date}</td></tr>`:'',
+    item.date?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">정보제공일</td><td style="color:#333;">${item.date}</td></tr>`:'',
     sp?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">대지면적</td><td style="color:#333;">${fN(sp)}평 <span style="color:#aaa;">(${fN(toN(item.site))}㎡)</span></td></tr>`:'',
     fp?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">연면적</td><td style="color:#333;">${fN(fp)}평 <span style="color:#aaa;">(${fN(toN(item.floor))}㎡)</span></td></tr>`:'',
     item.floors?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">층수</td><td style="color:#333;">${item.floors}층</td></tr>`:'',
@@ -633,7 +633,7 @@ function handleFile(e){
           region:gv('시도','시/도','region')||getRegion(addr),
           subregion:gv('시군구','시/군/구','subregion')||getSub(addr),
           provider:gv('정보제공자','provider','제공자'),
-          date:gv('검토일자','date','일자'),
+          date:gv('정보제공일','date','일자'),
           site:gv('대지면적','site'),
           floor:gv('연면적','floor'),
           floors:gv('층수','floors'),
@@ -654,7 +654,7 @@ function handleFile(e){
 // ── 엑셀 내보내기 ──
 function exportExcel(){
   if(!db.length){showToast('내보낼 데이터가 없습니다','err');return;}
-  const headers=['사업장명','주소','연도','시도','시군구','정보제공자','검토일자','대지면적','연면적','층수','세대수','비고'];
+  const headers=['사업장명','주소','연도','시도','시군구','정보제공자','정보제공일','대지면적','연면적','층수','세대수','비고'];
   const data=[headers,...db.map(i=>[i.name,i.addr,i.year,i.region,i.subregion,i.provider,i.date,i.site,i.floor,i.floors,i.units,i.memo])];
   const wb=XLSX.utils.book_new();
   const ws=XLSX.utils.aoa_to_sheet(data);
