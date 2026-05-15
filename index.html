@@ -266,6 +266,7 @@ input:focus,select:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(36,4
         <input type="hidden" id="fyear" value="2026">
       </div>
       <div class="fr"><label class="fl">정보제공자</label><input type="text" id="fprov" placeholder="이름"></div>
+      <div class="fr"><label class="fl">검토부서</label><input type="text" id="fdept" placeholder="주택개발1팀 등"></div>
       <div class="fr"><label class="fl">정보제공일</label><input type="date" id="fdate"></div>
       <div class="fr"><label class="fl">대지면적 (㎡)</label><input type="text" id="fsite" placeholder="예: 5230"></div>
       <div class="fr"><label class="fl">연면적 (㎡)</label><input type="text" id="ffloor" placeholder="예: 45600"></div>
@@ -332,8 +333,8 @@ async function loadDb(){
 async function saveDb(){
   setSave('saving','저장 중...');
   try{
-    const c=db.map(({id,name,addr,year,region,subregion,provider,date,site,floor,floors,units,memo,lat,lng})=>
-      ({id,name,addr,year,region:region||'',subregion:subregion||'',provider:provider||'',date:date||'',site:site||'',floor:floor||'',floors:floors||'',units:units||'',memo:memo||'',lat:lat||null,lng:lng||null}));
+    const c=db.map(({id,name,addr,year,region,subregion,provider,dept,date,site,floor,floors,units,memo,lat,lng})=>
+      ({id,name,addr,year,region:region||'',subregion:subregion||'',provider:provider||'',dept:dept||'',date:date||'',site:site||'',floor:floor||'',floors:floors||'',units:units||'',memo:memo||'',lat:lat||null,lng:lng||null}));
     const r=await fetch(DU+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({projects:c})});
     if(!r.ok) throw new Error(r.status);
     setSave('ok','저장됨 ✓');
@@ -549,6 +550,7 @@ function buildPopup(item){
   const sp=toPy(item.site),fp=toPy(item.floor);
   const rows=[
     item.provider?`<tr><td style="color:#888;white-space:nowrap;padding-right:10px;padding-bottom:3px;">정보제공자</td><td style="color:#333;font-weight:600;">${item.provider}</td></tr>`:'',
+    item.dept?`<tr><td style="color:#888;white-space:nowrap;padding-right:10px;padding-bottom:3px;">검토부서</td><td style="color:#333;">${item.dept}</td></tr>`:'',
     item.date?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">정보제공일</td><td style="color:#333;">${item.date}</td></tr>`:'',
     sp?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">대지면적</td><td style="color:#333;">${fN(sp)}평 <span style="color:#aaa;">(${fN(toN(item.site))}㎡)</span></td></tr>`:'',
     fp?`<tr><td style="color:#888;padding-right:10px;padding-bottom:3px;">연면적</td><td style="color:#333;">${fN(fp)}평 <span style="color:#aaa;">(${fN(toN(item.floor))}㎡)</span></td></tr>`:'',
@@ -691,7 +693,7 @@ function openAdd(){
   eid=null;
   document.getElementById('mtitle').textContent='사업장 추가';
   document.getElementById('delbtn').style.display='none';
-  ['fid','fname','faddr','fprov','fdate','fsite','ffloor','ffloors','funits','fmemo'].forEach(id=>document.getElementById(id).value='');
+  ['fid','fname','faddr','fprov','fdept','fdate','fsite','ffloor','ffloors','funits','fmemo'].forEach(id=>document.getElementById(id).value='');
   setY('2026');
   document.getElementById('modal').classList.add('show');
   setTimeout(()=>document.getElementById('fname').focus(),100);
@@ -706,6 +708,7 @@ function openEdit(id){
   document.getElementById('fname').value=item.name||'';
   document.getElementById('faddr').value=item.addr||'';
   document.getElementById('fprov').value=item.provider||'';
+  document.getElementById('fdept').value=item.dept||'';
   document.getElementById('fdate').value=item.date||'';
   document.getElementById('fsite').value=item.site||'';
   document.getElementById('ffloor').value=item.floor||'';
@@ -732,6 +735,7 @@ function submitModal(){
       if(db[idx]._m){clusterer&&clusterer.removeMarker(db[idx]._m);db[idx]._m.setMap(null);}
       db[idx]={...db[idx],name,addr,year,region,subregion,
         provider:document.getElementById('fprov').value.trim(),
+               dept:document.getElementById('fdept').value.trim(),
         date:document.getElementById('fdate').value,
         site:document.getElementById('fsite').value.trim(),
         floor:document.getElementById('ffloor').value.trim(),
@@ -745,6 +749,7 @@ function submitModal(){
   }else{
     const item={id:Date.now().toString(),name,addr,year,region,subregion,
       provider:document.getElementById('fprov').value.trim(),
+                dept:document.getElementById('fdept').value.trim(),
       date:document.getElementById('fdate').value,
       site:document.getElementById('fsite').value.trim(),
       floor:document.getElementById('ffloor').value.trim(),
