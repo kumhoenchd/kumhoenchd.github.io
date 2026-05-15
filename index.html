@@ -666,8 +666,8 @@ function exportExcel(){
   showToast(`${db.length}건 내보내기 완료`,'ok');
 }
 
-function dlTpl(){const a=document.createElement('a');a.href=XT;a.download='수주검토_사업장_입력양식.xlsx';a.click();}
-
+function dlTpl(){const a=document.createElement('a');a.href='수주검토_사업장_입력양식.xlsx';a.download='수주검토_사업장_입력양식.xlsx';a.click();}
+  
 // ── 지오코딩 ──
 function geoItem(item,cb){
   if(!ready){setTimeout(()=>geoItem(item,cb),500);return;}
