@@ -314,7 +314,7 @@ window.addEventListener('load',async()=>{
       }]
     });
 document.getElementById('mo').classList.add('hidden');
-    initPlaceSearch();
+    if(typeof initPlaceSearch==='function') initPlaceSearch();
     document.getElementById('leg').style.display='block';
   });
   await loadDb();
