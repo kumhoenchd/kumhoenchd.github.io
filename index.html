@@ -314,7 +314,8 @@ window.addEventListener('load',async()=>{
         fontWeight:'700',lineHeight:'36px',fontSize:'13px'
       }]
     });
-    document.getElementById('mo').classList.add('hidden');
+document.getElementById('mo').classList.add('hidden');
+    initPlaceSearch();
     document.getElementById('leg').style.display='block';
   });
   await loadDb();
@@ -328,6 +329,7 @@ async function loadDb(){
   }catch(e){db=[];}
   renderTree();updateStats();setSave('ok','동기화됨');
   if(ready) restoreMarkers();
+  applyAdminUI();
 }
 
 async function saveDb(){
